@@ -18,7 +18,17 @@ def home_page(request):
           # new_item_text = ''
 
       items = Item.objects.all()
-      return render(request, 'home.html', {'items': items})
+      itemsCount = Item.objects.count()
+      comment = 'yey, waktunya berlibur'
+
+      if itemsCount == 0:
+          comment = 'yey, waktunya berlibur'
+      if itemsCount > 0:
+          comment = 'sibuk tapi santai'
+      if itemsCount >=5:
+          comment = 'oh tidak'
+
+      return render(request, 'home.html', {'items': items, 'comment' : comment})
 
       # item = Item()
       # item.text = request.POST.get('item_text', '')

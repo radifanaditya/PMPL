@@ -17,7 +17,9 @@ class HomePageTest(TestCase):
     def test_home_page_returns_correct_html(self):
         request = HttpRequest()
         response = home_page(request)
-        expected_html = render_to_string('home.html')
+        expected_html = render_to_string('home.html',
+            { "comment": 'yey, waktunya berlibur' } 
+        )
         self.assertEqual(response.content.decode(), expected_html)
         # self.assertTrue(response.content.startswith(b'<html>'))
         # self.assertIn(b'<title>To-Do lists</title>', response.content)
@@ -54,6 +56,53 @@ class HomePageTest(TestCase):
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response['location'], '/')
 
+    def test_home_page_only_saves_items_when_necessary(self):
+        request = HttpRequest()
+        home_page(request)
+        self.assertEqual(Item.objects.count(), 0)
+
+    def test_home_page_displays_all_list_items(self):
+        Item.objects.create(text='itemey 1')
+        Item.objects.create(text='itemey 2')
+
+        request = HttpRequest()
+        response = home_page(request)
+
+        self.assertIn('itemey 1', response.content.decode())
+        self.assertIn('itemey 2', response.content.decode())   
+
+    def test_no_comment(self):
+    	request = HttpRequest()
+    	response = home_page(request)
+
+    	self.assertEqual(Item.objects.count(), 0)
+    	self.assertIn('yey, waktunya berlibur', response.content.decode())
+
+    def test_home_page_item_less_than_five(self):
+        Item.objects.create(text='itemey 1')
+
+        request = HttpRequest()
+        response = home_page(request)
+
+        self.assertLess(Item.objects.count(), 5)
+        self.assertGreater(Item.objects.count(), 0)
+        self.assertIn('sibuk tapi santai', response.content.decode())
+
+    def test_home_page_item_greater_equal__than_five(self):
+        Item.objects.create(text='itemey 1')
+        Item.objects.create(text='itemey 2')
+        Item.objects.create(text='itemey 3')
+        Item.objects.create(text='itemey 4')
+        Item.objects.create(text='itemey 5')
+
+        request = HttpRequest()
+        response = home_page(request)
+
+        self.assertGreaterEqual(Item.objects.count(), 5)
+        self.assertIn('oh tidak', response.content.decode())
+
+class ItemModelTest(TestCase):
+
     def test_saving_and_retrieving_items(self):
         first_item = Item()
         first_item.text = 'The first (ever) list item'
@@ -70,18 +119,3 @@ class HomePageTest(TestCase):
         second_saved_item = saved_items[1]
         self.assertEqual(first_saved_item.text, 'The first (ever) list item')
         self.assertEqual(second_saved_item.text, 'Item the second')
-
-    def test_home_page_only_saves_items_when_necessary(self):
-        request = HttpRequest()
-        home_page(request)
-        self.assertEqual(Item.objects.count(), 0)
-
-    def test_home_page_displays_all_list_items(self):
-        Item.objects.create(text='itemey 1')
-        Item.objects.create(text='itemey 2')
-
-        request = HttpRequest()
-        response = home_page(request)
-
-        self.assertIn('itemey 1', response.content.decode())
-        self.assertIn('itemey 2', response.content.decode())
