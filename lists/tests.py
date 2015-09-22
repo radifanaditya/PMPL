@@ -78,7 +78,8 @@ class HomePageTest(TestCase):
     	self.assertIn('yey, waktunya berlibur', response.content.decode())
 
     def test_home_page_item_less_than_five(self):
-        Item.objects.create(text='itemey 1')
+        list_ = List.objects.create()
+        Item.objects.create(text='itemey 1', list=list_)
 
         request = HttpRequest()
         response = home_page(request)
@@ -88,11 +89,12 @@ class HomePageTest(TestCase):
         self.assertIn('sibuk tapi santai', response.content.decode())
 
     def test_home_page_item_greater_equal__than_five(self):
-        Item.objects.create(text='itemey 1')
-        Item.objects.create(text='itemey 2')
-        Item.objects.create(text='itemey 3')
-        Item.objects.create(text='itemey 4')
-        Item.objects.create(text='itemey 5')
+        list_ = List.objects.create()
+        Item.objects.create(text='itemey 1', list=list_)
+        Item.objects.create(text='itemey 2', list=list_)
+        Item.objects.create(text='itemey 3', list=list_)
+        Item.objects.create(text='itemey 4', list=list_)
+        Item.objects.create(text='itemey 5', list=list_)
 
         request = HttpRequest()
         response = home_page(request)
@@ -130,18 +132,20 @@ class ListAndItemModelsTest(TestCase):
         self.assertEqual(second_saved_item.list, list_)
 
 class ListViewTest(TestCase):
-    def test_uses_list_template(self):
-        response = self.client.get('/lists/the-only-list-in-the-world/')
-        self.assertTemplateUsed(response, 'list.html')
 
     def test_displays_all_items(self):
-        Item.objects.create(text='itemey 1')
-        Item.objects.create(text='itemey 2')
+        list_ = List.objects.create()
+        Item.objects.create(text='itemey 1', list=list_)
+        Item.objects.create(text='itemey 2', list=list_)
 
         response = self.client.get('/lists/the-only-list-in-the-world/')
 
         self.assertContains(response, 'itemey 1')
         self.assertContains(response, 'itemey 2')
+
+    def test_uses_list_template(self):
+        response = self.client.get('/lists/the-only-list-in-the-world/')
+        self.assertTemplateUsed(response, 'list.html')
 
 class NewListTest(TestCase):
 

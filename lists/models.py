@@ -2,9 +2,10 @@ from django.db import models
 
 # Create your models here.
 
+class List(models.Model):
+    pass
+
 class Item(models.Model):
     # pass
     text = models.TextField(default='')
-
-class List(models.Model):
-    pass
+    list = models.ForeignKey(List, default=None)
