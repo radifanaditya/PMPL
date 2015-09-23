@@ -48,9 +48,9 @@ def view_list(request, list_id):
 
       if counterlist == 0 :
           comment = 'yey, waktunya berlibur'
-      elif (counterlist > 0) and (counterlist < 5)
+      elif (counterlist > 0) and (counterlist < 5) :
           comment = 'sibuk tapi santai'
-      else
+      else :
           comment = 'oh tidak'
 
       return render(request, 'list.html', {'list': list_, 'comment': comment})
