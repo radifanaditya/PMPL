@@ -21,12 +21,12 @@ def home_page(request):
       itemsCount = Item.objects.count()
       comment = 'yey, waktunya berlibur'
 
-      if itemsCount == 0:
-          comment = 'yey, waktunya berlibur'
-      if itemsCount > 0:
-          comment = 'sibuk tapi santai'
-      if itemsCount >=5:
-          comment = 'oh tidak'
+      # if itemsCount == 0:
+          # comment = 'yey, waktunya berlibur'
+      # if itemsCount > 0:
+          # comment = 'sibuk tapi santai'
+      # if itemsCount >=5:
+          # comment = 'oh tidak'
 
       return render(request, 'home.html', {'comment': comment})
 
@@ -43,7 +43,17 @@ def view_list(request, list_id):
       # items = Item.objects.all()
       list_ = List.objects.get(id=list_id)
       # items = Item.objects.filter(list=list_)
-      return render(request, 'list.html', {'list': list_})
+      comment = ''
+      counterlist = Item.objects.filter(list_id=list_.id).count()
+
+      if counterlist == 0 :
+          comment = 'yey, waktunya berlibur'
+      elif (counterlist > 0) and (counterlist < 5)
+          comment = 'sibuk tapi santai'
+      else
+          comment = 'oh tidak'
+
+      return render(request, 'list.html', {'list': list_, 'comment': comment})
 
 def new_list(request):
       list_ = List.objects.create()
