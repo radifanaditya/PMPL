@@ -19,6 +19,7 @@ from lists import urls as list_urls
 
 urlpatterns = [
     url(r'^$', list_views.home_page, name='home'),
+    url(r'^blog', list_views.blog_page, name='blog'),
     url(r'^lists/', include(list_urls)),
     # url(r'^lists/new$', views.new_list, name='new_list'),
     # url(r'^lists/(\d+)/$', views.view_list, name='view_list'),

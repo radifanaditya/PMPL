@@ -39,6 +39,9 @@ def home_page(request):
           # 'new_item_text': new_item_text,
       # })
 
+def blog_page(request):
+	return render(request, 'blog_temp.html')
+
 def view_list(request, list_id):
       # items = Item.objects.all()
       list_ = List.objects.get(id=list_id)
